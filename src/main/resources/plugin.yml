@@ -1,0 +1,8 @@
+name: McMatchmakingSolo
+version: '${project.version}'
+main: at.flori4n.mcmatchmakingsolo.McMatchmakingSolo
+commands:
+  mcMatchmaking:
+    description: -;
+  start:
+    description: -;
