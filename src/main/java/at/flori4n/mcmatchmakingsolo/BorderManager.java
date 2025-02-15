@@ -25,7 +25,7 @@ public class BorderManager {
         world.getWorldBorder().setCenter(center);
         world.getWorldBorder().setDamageAmount(damage);
         world.getWorldBorder().setSize(startingSize);
-        world.getWorldBorder().setSize(startingSize, shrinkingSpeed);//close border
+        world.getWorldBorder().setSize(0, shrinkingSpeed);//close border
 
 
         //moveBorderToEndPoint
