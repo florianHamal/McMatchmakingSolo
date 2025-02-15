@@ -33,7 +33,7 @@ public class Commands implements CommandExecutor {
                     gameData.setBorderStartingSize(Float.parseFloat(strings[1]));
                     gameData.setBorderDamage(Float.parseFloat(strings[2]));
                     gameData.setBorderShrinkingSpeed(Long.parseLong(strings[3]));
-                    gameData.setBorderMovementSpeed(Long.parseLong(strings[4]));
+                    gameData.setBorderMovementSpeed(Float.parseFloat(strings[4]));
                     break;
                 case "setBorderCenter":
                     gameData.setBorderCenter(player.getLocation());
