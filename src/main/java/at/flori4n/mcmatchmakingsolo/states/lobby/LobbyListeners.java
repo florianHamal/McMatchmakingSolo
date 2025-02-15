@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.github.paperspigot.Title;
 
 public class LobbyListeners implements Listener {
     private int taskId;
@@ -33,6 +34,8 @@ public class LobbyListeners implements Listener {
 
         if (gameData.getPlayers().size()<gameData.getMaxPlayers()){
             gameData.getPlayers().add(event.getPlayer());
+        }else{
+            p.sendTitle(new Title("Zu viele Spieler","du bist Zuschauer"));
         }
         if (!lobbyState.isTaskRunning()&&Bukkit.getOnlinePlayers().size()>=gameData.getPlayersToStart()){
             lobbyState.startCounter();
