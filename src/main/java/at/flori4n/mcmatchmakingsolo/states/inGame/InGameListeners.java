@@ -17,10 +17,6 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class InGameListeners implements Listener {
     GameData gameData = GameData.getInstance();
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractAtEntityEvent e){
-        if (e.getRightClicked().hasMetadata("flori4n.ctf.flag"))e.setCancelled(true);
-    }
 
     @EventHandler
     public void blockBreakListener(BlockBreakEvent e){
