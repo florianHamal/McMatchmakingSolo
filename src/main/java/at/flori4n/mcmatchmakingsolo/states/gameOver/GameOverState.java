@@ -29,8 +29,8 @@ public class GameOverState implements State {
             player.sendTitle(new Title(ChatColor.GOLD +winner.getName(),"§2 hat gewonnen",1*20,10*20,1*20));
         }
         Bukkit.broadcastMessage("#------------------------------#\n"
-                +ChatColor.GOLD + winner.getName() + ChatColor.GRAY +
-                "\n hat gewonnen");
+                +ChatColor.GOLD + winner.getName() + ChatColor.GRAY +" hat gewonnen\n"+
+                "#------------------------------#");
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(McMatchmakingSolo.getPlugin(), new Runnable() {
             int counter = 20;
