@@ -3,6 +3,9 @@ package at.flori4n.mcmatchmakingsolo.states.inGame;
 import at.flori4n.mcmatchmakingsolo.GameData;
 import at.flori4n.mcmatchmakingsolo.states.gameOver.GameOverState;
 import at.flori4n.mcmatchmakingsolo.Manager;
+
+import javax.swing.JPopupMenu.Separator;
+
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,6 +52,7 @@ public class InGameListeners implements Listener {
     @EventHandler
     public void onPlayerDeath (PlayerDeathEvent e){
         gameData.getPlayers().remove(e.getEntity());
+        e.getEntity().setGameMode(GameMode.SPECTATOR);
         if (gameData.getPlayers().size()==1){
             Manager.getInstance().setState(new GameOverState(gameData.getPlayers().get(0)));
         }
