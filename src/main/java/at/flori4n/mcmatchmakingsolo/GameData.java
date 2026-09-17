@@ -11,7 +11,7 @@ import java.util.List;
 
 public class GameData {
 
-    private static GameData instance;
+    private static GameData INSTANCE;
 
     @Getter
     private List<Location> spawns = new ArrayList<Location>();
@@ -40,13 +40,20 @@ public class GameData {
     @Getter
     @Setter
     private Location lobbyLocation;
-
+    @Getter 
+    private List<String> fixedPlayers; 
 
 
     private void load(){
-        FileConfiguration config = McMatchmakingSolo.getPlugin().getConfig();
 
-        start = config.getBoolean("start");
+        
+
+	FileConfiguration config = McMatchmakingSolo.getPlugin().getConfig();
+	
+
+	fixedPlayers = config.getStringList("fixedPlayers");
+	
+	start = config.getBoolean("start");
         List<Location> spawns = (List<Location>)config.getList("spawns");
         if (spawns!=null)this.spawns = spawns;
         lobbyLocation = (Location) config.get("lobbyLocation");
@@ -89,7 +96,7 @@ public class GameData {
     }
 
     public static GameData getInstance() {
-        if (instance == null) instance = new GameData();
-        return instance;
+        if (INSTANCE == null) INSTANCE = new GameData();
+        return INSTANCE;
     }
 }

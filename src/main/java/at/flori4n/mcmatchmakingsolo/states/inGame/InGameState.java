@@ -7,6 +7,7 @@ import at.flori4n.mcmatchmakingsolo.State;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -35,6 +36,10 @@ public class InGameState implements State {
 
         if (GameData.getInstance().isUseBorder()){
             BorderManager.getInstance().start();
+        }
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 1);
         }
     }
 

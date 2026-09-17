@@ -16,68 +16,88 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.github.paperspigot.Title;
 
 public class LobbyListeners implements Listener {
-    private int taskId;
-    private GameData gameData = GameData.getInstance();
-    private LobbyState lobbyState;
+	private GameData gameData = GameData.getInstance();
+	private LobbyState lobbyState;
+
+	public LobbyListeners(LobbyState lobbyState) {
+		this.lobbyState = lobbyState;
+	}
+
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player p = event.getPlayer();
+		p.teleport(gameData.getLobbyLocation());
+		p.getInventory().clear();
+		p.setGameMode(GameMode.SURVIVAL);
+			
+
+		if(gameData.getFixedPlayers().isEmpty()){
+			if (gameData.getPlayers().size() < gameData.getMaxPlayers()) {
+				gameData.getPlayers().add(event.getPlayer());
+			} else {
+				p.sendTitle(new Title("Zu viele Spieler", "du bist Zuschauer"));
+			}	
+		}else{
+			if(gameData.getFixedPlayers().contains(p.getName())){
+				gameData.getPlayers().add(p);
+			}else{
+				p.sendTitle(new Title("Du bist Zuschauer"));
+			}
+		}
 
 
-    public LobbyListeners(LobbyState lobbyState){
-        this.lobbyState = lobbyState;
-    }
+		
+		if (!lobbyState.isTaskRunning() && gameData.getPlayers().size() >= gameData.getPlayersToStart()) {
+			lobbyState.startCounter();
+		}
+		Bukkit.broadcastMessage(gameData.getPlayers().size() + "/" + gameData.getMaxPlayers() + " Spieler");
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player p = event.getPlayer();
-        p.teleport(gameData.getLobbyLocation());
-        p.getInventory().clear();
-        p.setGameMode(GameMode.SURVIVAL);
+	}
 
-        if (gameData.getPlayers().size()<gameData.getMaxPlayers()){
-            gameData.getPlayers().add(event.getPlayer());
-        }else{
-            p.sendTitle(new Title("Zu viele Spieler","du bist Zuschauer"));
-        }
-        if (!lobbyState.isTaskRunning()&&Bukkit.getOnlinePlayers().size()>=gameData.getPlayersToStart()){
-            lobbyState.startCounter();
-        }
-        Bukkit.broadcastMessage(Bukkit.getOnlinePlayers().size() +"/"+gameData.getMaxPlayers() + " Spieler");
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
 
-    }
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        Player p = event.getPlayer();
+		if (gameData.getPlayers().contains(player) && gameData.getFixedPlayers().isEmpty()) {
+			Bukkit.getOnlinePlayers().stream()
+				.filter(p -> gameData.getPlayers().contains(p)).findFirst()
+				.ifPresent(p -> gameData.getPlayers().add(player));
+		}
+		gameData.getPlayers().remove(player);
 
-        gameData.getPlayers().remove(p);
 
-        if (lobbyState.isTaskRunning()&&Bukkit.getOnlinePlayers().size()-1<gameData.getPlayersToStart()){
-            lobbyState.stopCounter();
-            Bukkit.broadcastMessage("Start abgebrochen");
-            Bukkit.broadcastMessage("Zu wenig Spieler");
-        }
-        Bukkit.broadcastMessage(Bukkit.getOnlinePlayers().size()-1 +"/"+gameData.getMaxPlayers() + " Spieler");
-    }
+		if (lobbyState.isTaskRunning() && gameData.getPlayers().size() - 1 < gameData.getPlayersToStart()) {
+			lobbyState.stopCounter();
+			Bukkit.broadcastMessage("Start abgebrochen");
+			Bukkit.broadcastMessage("Zu wenig Spieler");
+		}
+		Bukkit.broadcastMessage(
+				gameData.getPlayers().size() - 1 + "/" + gameData.getMaxPlayers() + " Spieler");
+	}
 
-    @EventHandler
-    public void foodListener(FoodLevelChangeEvent e){
-        e.setCancelled(true);
-    }
+	@EventHandler
+	public void foodListener(FoodLevelChangeEvent e) {
+		e.setCancelled(true);
+	}
 
-    @EventHandler
-    public void damageListener(EntityDamageEvent e){
-        e.setCancelled(true);
-    }
-    @EventHandler
-    public void blockBreakListener(BlockBreakEvent e){
-        e.setCancelled(true);
-    }
+	@EventHandler
+	public void damageListener(EntityDamageEvent e) {
+		e.setCancelled(true);
+	}
 
-    @EventHandler
-    public void weatherChangeListener(WeatherChangeEvent e){
-        e.setCancelled(true);
-        e.getWorld().setThundering(false);
-    }
-    @EventHandler
-    public void onServerPing(ServerListPingEvent e){
-        e.setMotd("Lobby");
-    }
+	@EventHandler
+	public void blockBreakListener(BlockBreakEvent e) {
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void weatherChangeListener(WeatherChangeEvent e) {
+		e.setCancelled(true);
+		e.getWorld().setThundering(false);
+	}
+
+	@EventHandler
+	public void onServerPing(ServerListPingEvent e) {
+		e.setMotd("Lobby");
+	}
 }

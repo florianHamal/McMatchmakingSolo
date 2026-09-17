@@ -4,6 +4,7 @@ import at.flori4n.mcmatchmakingsolo.McMatchmakingSolo;
 import at.flori4n.mcmatchmakingsolo.State;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.github.paperspigot.Title;
@@ -31,6 +32,10 @@ public class GameOverState implements State {
         Bukkit.broadcastMessage("#------------------------------#\n"
                 +ChatColor.GOLD + winner.getName() + ChatColor.GRAY +" hat gewonnen\n"+
                 "#------------------------------#");
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.playSound(player.getLocation(), Sound.WITHER_SPAWN, 1, 1);
+        }
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(McMatchmakingSolo.getPlugin(), new Runnable() {
             int counter = 20;
