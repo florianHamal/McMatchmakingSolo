@@ -4,6 +4,7 @@ import at.flori4n.mcmatchmakingsolo.BorderManager;
 import at.flori4n.mcmatchmakingsolo.GameData;
 import at.flori4n.mcmatchmakingsolo.McMatchmakingSolo;
 import at.flori4n.mcmatchmakingsolo.State;
+import at.flori4n.mcmatchmakingsolo.stats.StatsService;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -34,6 +35,10 @@ public class InGameState implements State {
             player.setGameMode(GameMode.SURVIVAL);
         });
 
+        String matchName = McMatchmakingSolo.getPlugin().getConfig()
+                .getString("cloudpanel.match-name", "mc-match");
+        StatsService.getInstance().start(new java.util.ArrayList<>(gameData.getPlayers()), matchName);
+
         if (GameData.getInstance().isUseBorder()){
             BorderManager.getInstance().start();
         }
@@ -51,6 +56,7 @@ public class InGameState implements State {
     @Override
     public void postAction() {
         System.out.println("stopInGameState");
+        StatsService.getInstance().stopAndUpload();
         HandlerList.unregisterAll(inGameListeners);
     }
 }

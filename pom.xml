@@ -62,6 +62,11 @@
 
   <dependencies>
       <dependency>
+          <groupId>at.flori4n</groupId>
+          <artifactId>cloudpanel-client</artifactId>
+          <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
           <groupId>org.github.paperspigot</groupId>
           <artifactId>paperspigot-api</artifactId>
           <version>1.8.8-R0.1-SNAPSHOT</version>
