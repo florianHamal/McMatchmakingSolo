@@ -36,6 +36,9 @@ public class GameData {
     private boolean useBorder,start;
     @Getter
     @Setter
+    private boolean hideNametags = true;
+    @Getter
+    @Setter
     private int lobbyTime,playersToStart;
     @Getter
     @Setter
@@ -61,6 +64,7 @@ public class GameData {
         playersToStart = config.getInt("playersToStart");
         //border config
         useBorder = config.getBoolean("useBorder");
+        hideNametags = config.getBoolean("hideNametags", true);
         borderStartingSize = config.getLong("borderStartingSize");
         borderDamage = (float) config.getDouble("borderDamage");
         borderShrinkingSpeed = (long) config.getDouble("borderShrinkingSpeed");
@@ -80,6 +84,7 @@ public class GameData {
         config.set("borderMovementSpeed", borderMovementSpeed);
         config.set("borderEndPoints", borderEndPoints);
         config.set("useBorder", useBorder);
+        config.set("hideNametags", hideNametags);
         config.set("start", start);
         config.set("lobbyLocation", lobbyLocation);
         config.set("lobbyTime", lobbyTime);

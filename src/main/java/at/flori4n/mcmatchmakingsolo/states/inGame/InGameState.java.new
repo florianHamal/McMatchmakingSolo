@@ -44,9 +44,7 @@ public class InGameState implements State {
         String matchName = Bukkit.getServer().getMotd();
         StatsService.getInstance().start(new java.util.ArrayList<>(gameData.getPlayers()), matchName);
 
-        if (gameData.isHideNametags()) {
-            hideNametags();
-        }
+        hideNametags();
 
         if (GameData.getInstance().isUseBorder()){
             BorderManager.getInstance().start();
@@ -70,24 +68,32 @@ public class InGameState implements State {
         HandlerList.unregisterAll(inGameListeners);
     }
 
+    /**
+     * Hides competitors' nametags from each other, but not from spectators:
+     * everyone shares one team with HIDE_FOR_OWN_TEAM, spectators stay teamless.
+     * Visibility is viewer-side, so every online player gets the board.
+     */
     private static void hideNametags() {
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
         Team hidden = board.registerNewTeam("nametagHidden");
         hidden.setNameTagVisibility(NameTagVisibility.HIDE_FOR_OWN_TEAM);
         for (Player player : GameData.getInstance().getPlayers()) {
-            hidden.addEntry(player.getName());
-            player.setScoreboard(board);
+            hidden.addPlayer(player);
+        }
+        for (Player viewer : Bukkit.getOnlinePlayers()) {
+            viewer.setScoreboard(board);
         }
         hiddenBoard = board;
     }
 
-    static void clearBoard(Player player) {
-        if (hiddenBoard == null) return;
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+    /** Gives late joiners the board so hidden tags stay hidden for them too. */
+    static void applyBoard(Player player) {
+        if (hiddenBoard != null) {
+            player.setScoreboard(hiddenBoard);
+        }
     }
 
     private static void restoreNametags() {
-        if (hiddenBoard == null) return;
         Scoreboard main = Bukkit.getScoreboardManager().getMainScoreboard();
         for (Player viewer : Bukkit.getOnlinePlayers()) {
             viewer.setScoreboard(main);
