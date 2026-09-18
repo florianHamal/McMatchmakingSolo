@@ -35,12 +35,12 @@ public class InGameListeners implements Listener {
         Player player = e.getPlayer();
         player.setGameMode(GameMode.SPECTATOR);
         player.teleport(gameData.getLobbyLocation());
+        StatsService.getInstance().applyBoardTo(player);
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         StatsService.getInstance().setPlacement(event.getPlayer().getUniqueId(), gameData.getPlayers().size());
         gameData.getPlayers().remove(event.getPlayer());
-        InGameState.clearBoard(event.getPlayer());
         if (gameData.getPlayers().size()==1){
             StatsService.getInstance().setPlacement(gameData.getPlayers().get(0).getUniqueId(), 1);
             Manager.getInstance().setState(new GameOverState(gameData.getPlayers().get(0)));
@@ -59,7 +59,6 @@ public class InGameListeners implements Listener {
         }
         StatsService.getInstance().setPlacement(e.getEntity().getUniqueId(), gameData.getPlayers().size());
         gameData.getPlayers().remove(e.getEntity());
-        InGameState.clearBoard(e.getEntity());
         e.getEntity().setGameMode(GameMode.SPECTATOR);
         if (gameData.getPlayers().size()==1){
             StatsService.getInstance().setPlacement(gameData.getPlayers().get(0).getUniqueId(), 1);

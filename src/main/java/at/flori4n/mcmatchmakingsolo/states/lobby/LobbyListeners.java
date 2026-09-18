@@ -60,12 +60,9 @@ public class LobbyListeners implements Listener {
 
 	}
 
-	/** Refreshes the player's name in CloudPanel on every lobby join. Runs async. No-op when disabled. */
 	private void refreshPlayerName(final Player p) {
 		final String baseUrl = gameData.getCloudPanelUrl();
-		if (baseUrl == null || baseUrl.trim().isEmpty()) {
-			return;
-		}
+		if (baseUrl == null || baseUrl.trim().isEmpty()) return;
 		Bukkit.getScheduler().runTaskAsynchronously(McMatchmakingSolo.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
@@ -86,7 +83,7 @@ public class LobbyListeners implements Listener {
 
 		if (gameData.getPlayers().contains(player) && gameData.getFixedPlayers().isEmpty()) {
 			Bukkit.getOnlinePlayers().stream()
-				.filter(p -> gameData.getPlayers().contains(p)).findFirst()
+				.filter(p -> !gameData.getPlayers().contains(p)).findFirst()
 				.ifPresent(p -> gameData.getPlayers().add(player));
 		}
 		gameData.getPlayers().remove(player);
@@ -98,7 +95,7 @@ public class LobbyListeners implements Listener {
 			Bukkit.broadcastMessage("Zu wenig Spieler");
 		}
 		Bukkit.broadcastMessage(
-				gameData.getPlayers().size() - 1 + "/" + gameData.getMaxPlayers() + " Spieler");
+				gameData.getPlayers().size() + "/" + gameData.getMaxPlayers() + " Spieler");
 	}
 
 	@EventHandler

@@ -11,17 +11,11 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.scoreboard.NameTagVisibility;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import java.util.Random;
 
 public class InGameState implements State {
     InGameListeners inGameListeners = new InGameListeners();
-
-    /** Scoreboard hiding the competitors' nametags. Null outside the ingame state. */
-    private static Scoreboard hiddenBoard;
     @Override
     public void preaction() {
         System.out.println("initIngGmeState");
@@ -44,10 +38,6 @@ public class InGameState implements State {
         String matchName = Bukkit.getServer().getMotd();
         StatsService.getInstance().start(new java.util.ArrayList<>(gameData.getPlayers()), matchName);
 
-        if (gameData.isHideNametags()) {
-            hideNametags();
-        }
-
         if (GameData.getInstance().isUseBorder()){
             BorderManager.getInstance().start();
         }
@@ -66,32 +56,6 @@ public class InGameState implements State {
     public void postAction() {
         System.out.println("stopInGameState");
         StatsService.getInstance().stopAndUpload();
-        restoreNametags();
         HandlerList.unregisterAll(inGameListeners);
-    }
-
-    private static void hideNametags() {
-        Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
-        Team hidden = board.registerNewTeam("nametagHidden");
-        hidden.setNameTagVisibility(NameTagVisibility.HIDE_FOR_OWN_TEAM);
-        for (Player player : GameData.getInstance().getPlayers()) {
-            hidden.addEntry(player.getName());
-            player.setScoreboard(board);
-        }
-        hiddenBoard = board;
-    }
-
-    static void clearBoard(Player player) {
-        if (hiddenBoard == null) return;
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-    }
-
-    private static void restoreNametags() {
-        if (hiddenBoard == null) return;
-        Scoreboard main = Bukkit.getScoreboardManager().getMainScoreboard();
-        for (Player viewer : Bukkit.getOnlinePlayers()) {
-            viewer.setScoreboard(main);
-        }
-        hiddenBoard = null;
     }
 }

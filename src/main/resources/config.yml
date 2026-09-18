@@ -30,4 +30,4 @@ borderMovementSpeed: 1.0
 
 # Statistics server (CloudPanel). Empty means disabled: no stats or name refresh requests are sent.
 cloudpanel:
-  url: ""
+  url: "http://localhost:8080"

@@ -23,15 +23,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
-/**
- * Tracks kills and placements for the running match, manages the ingame
- * scoreboards (nametag hiding plus top-kills sidebar) and uploads the stats
- * to the CloudPanel API when the ingame state stops.
- *
- * <p>Placement rule: the leaving player gets the placement passed by the
- * caller. Whoever is left without a placement when the match ends gets
- * place 1.
- */
 public class StatsService {
 
     private static StatsService INSTANCE;
@@ -41,7 +32,6 @@ public class StatsService {
     private String matchName;
     private LocalDateTime startTime;
 
-    /** Match board of the running match (nametags + sidebar). Null when nametag hiding is disabled. */
     private Scoreboard matchBoard;
     private Team nametagTeam;
     private boolean sidebarActive;
@@ -54,7 +44,6 @@ public class StatsService {
         return INSTANCE;
     }
 
-    /** Starts a match: snapshots competitors, hands them their boards, shows the sidebar. */
     public void start(List<Player> players, String matchName) {
         stats.clear();
         for (Player player : players) {
@@ -67,7 +56,6 @@ public class StatsService {
         showSidebar();
     }
 
-    /** Counts a kill for the killer. Unknown players (spectators) are ignored. */
     public void recordKill(UUID killerId) {
         PlayerStat stat = stats.get(killerId);
         if (stat != null) stat.setKills(stat.getKills() + 1);
@@ -86,7 +74,6 @@ public class StatsService {
         refreshSidebar();
     }
 
-    /** Copy of all tracked stats, sorted by kills descending. */
     public List<PlayerStat> snapshotByKills() {
         List<PlayerStat> copy = new ArrayList<>(stats.values());
         Collections.sort(copy, Comparator.comparingInt(PlayerStat::getKills).reversed());
@@ -122,12 +109,7 @@ public class StatsService {
         return requests;
     }
 
-    /**
-     * Gives every competitor from GameData the match board. Competitors share
-     * one HIDE_FOR_OWN_TEAM team so they can't see each other while teamless
-     * spectators see every nametag. Spectators get the same board, so everyone
-     * shares one sidebar. Skipped when hideNametags is disabled.
-     */
+
     private void setupBoards() {
         if (!GameData.getInstance().isHideNametags()) {
             return;
@@ -143,7 +125,6 @@ public class StatsService {
         }
     }
 
-    /** Hands the match board to a (re)joining player. No-op when disabled. */
     public void applyBoardTo(Player player) {
         if (matchBoard == null) return;
         if (nametagTeam != null && !GameData.getInstance().getPlayers().contains(player)) {
@@ -152,13 +133,11 @@ public class StatsService {
         player.setScoreboard(matchBoard);
     }
 
-    /** Shows the match sidebar. Call once when the match starts. */
     public void showSidebar() {
         sidebarActive = true;
         refreshSidebar();
     }
 
-    /** Refreshes the sidebar on the single match board (main board when nametags are shown). */
     private void refreshSidebar() {
         if (!sidebarActive) return;
         List<PlayerStat> sorted = snapshotByKills();
@@ -169,13 +148,11 @@ public class StatsService {
         for (PlayerStat stat : sorted) {
             if (stat.getPlacement() > 0) ordered.add(stat);
         }
-        Scoreboard board = matchBoard != null
-                ? matchBoard
-                : Bukkit.getScoreboardManager().getMainScoreboard();
-        showTopKills(board, ordered);
+        if(matchBoard != null)printScoreboard(matchBoard,ordered);
+        printScoreboard(board, ordered);
     }
 
-    private void showTopKills(Scoreboard board, List<PlayerStat> ordered) {
+    private void printScoreboard(Scoreboard board, List<PlayerStat> ordered) {
         Objective old = board.getObjective("topKills");
         if (old != null) old.unregister();
         Objective objective = board.registerNewObjective("topKills", "dummy");
@@ -183,7 +160,7 @@ public class StatsService {
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         for (PlayerStat stat : ordered) {
             String entry = displayName(stat.getPlayerId());
-	    if(stat.getPlacement() > 1) entry="§m"+entry;
+	    if(stat.getPlacement() != null) entry+="§m";
             objective.getScore(entry).setScore(stat.getKills());
         }
     }

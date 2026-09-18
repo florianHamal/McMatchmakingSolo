@@ -11,7 +11,6 @@ public final class McMatchmakingSolo extends JavaPlugin {
     private static McMatchmakingSolo plugin;
     @Override
     public void onEnable() {
-        // Plugin startup logic
         plugin = this;
         saveDefaultConfig();
         getCommand("mcMatchmaking").setExecutor(new Commands());
