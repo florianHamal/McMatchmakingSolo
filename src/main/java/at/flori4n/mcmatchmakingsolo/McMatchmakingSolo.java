@@ -13,6 +13,7 @@ public final class McMatchmakingSolo extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
+        saveDefaultConfig();
         getCommand("mcMatchmaking").setExecutor(new Commands());
         if (GameData.getInstance().isStart()){
             Manager.getInstance().setState(new LobbyState());

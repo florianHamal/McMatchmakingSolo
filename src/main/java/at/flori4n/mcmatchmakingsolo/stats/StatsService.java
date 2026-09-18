@@ -3,6 +3,7 @@ package at.flori4n.mcmatchmakingsolo.stats;
 import at.flori4n.cloudPanel.api.MatchPutRequest;
 import at.flori4n.cloudPanel.api.StatisticAddRequest;
 import at.flori4n.cloudPanel.client.BlockingCloudPanelClient;
+import at.flori4n.mcmatchmakingsolo.GameData;
 import at.flori4n.mcmatchmakingsolo.McMatchmakingSolo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -62,9 +63,11 @@ public class StatsService {
     }
 
     public void stopAndUpload() {
+        final String baseUrl = GameData.getInstance().getCloudPanelUrl();
+        if (baseUrl == null || baseUrl.trim().isEmpty()) {
+            return;
+        }
         final MatchPutRequest request = new MatchPutRequest(matchId, matchName, startTime, LocalDateTime.now(), toStatisticRequests());
-        final String baseUrl = McMatchmakingSolo.getPlugin().getConfig()
-                .getString("cloudpanel.url", "http://localhost:8080");
         Bukkit.getScheduler().runTaskAsynchronously(McMatchmakingSolo.getPlugin(),
                 new Runnable() {
                     @Override

@@ -60,10 +60,12 @@ public class LobbyListeners implements Listener {
 
 	}
 
-	/** Refreshes the player's name in CloudPanel on every lobby join. Runs async. */
+	/** Refreshes the player's name in CloudPanel on every lobby join. Runs async. No-op when disabled. */
 	private void refreshPlayerName(final Player p) {
-		final String baseUrl = McMatchmakingSolo.getPlugin().getConfig()
-				.getString("cloudpanel.url", "http://localhost:8080");
+		final String baseUrl = gameData.getCloudPanelUrl();
+		if (baseUrl == null || baseUrl.trim().isEmpty()) {
+			return;
+		}
 		Bukkit.getScheduler().runTaskAsynchronously(McMatchmakingSolo.getPlugin(), new Runnable() {
 			@Override
 			public void run() {

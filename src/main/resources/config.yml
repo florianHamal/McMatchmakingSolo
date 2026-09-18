@@ -1,0 +1,33 @@
+# McMatchmakingSolo configuration.
+# Values marked (command) are normally set in-game via /mcMatchmaking ... and saved with /mcMatchmaking save.
+# Values below are only defaults for a fresh config; use the commands to change them on the server.
+
+# Players that are always competitors (empty = everyone who joins may play).
+fixedPlayers: []
+
+# Start the lobby state on plugin enable.
+start: false
+
+# (command) Spawn points of the competitors.
+#spawns: []
+
+# (command) Lobby waiting settings.
+lobbyTime: 60
+playersToStart: 2
+#lobbyLocation:
+
+# Hide competitors' nametags from each other during the ingame state.
+hideNametags: true
+
+# (command) World border settings.
+useBorder: false
+borderStartingSize: 1000
+borderDamage: 1.0
+borderShrinkingSpeed: 60
+borderMovementSpeed: 1.0
+#borderCenter:
+#borderEndPoints: []
+
+# Statistics server (CloudPanel). Empty means disabled: no stats or name refresh requests are sent.
+cloudpanel:
+  url: ""

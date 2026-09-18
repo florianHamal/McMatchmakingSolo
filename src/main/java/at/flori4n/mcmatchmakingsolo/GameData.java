@@ -2,7 +2,6 @@ package at.flori4n.mcmatchmakingsolo;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -37,6 +36,10 @@ public class GameData {
     @Getter
     @Setter
     private boolean hideNametags = true;
+    //if blank statistics arent sent 
+    @Getter
+    @Setter
+    private String cloudPanelUrl = "";
     @Getter
     @Setter
     private int lobbyTime,playersToStart;
@@ -65,6 +68,7 @@ public class GameData {
         //border config
         useBorder = config.getBoolean("useBorder");
         hideNametags = config.getBoolean("hideNametags", true);
+        cloudPanelUrl = config.getString("cloudpanel.url", "");
         borderStartingSize = config.getLong("borderStartingSize");
         borderDamage = (float) config.getDouble("borderDamage");
         borderShrinkingSpeed = (long) config.getDouble("borderShrinkingSpeed");
@@ -85,6 +89,7 @@ public class GameData {
         config.set("borderEndPoints", borderEndPoints);
         config.set("useBorder", useBorder);
         config.set("hideNametags", hideNametags);
+        config.set("cloudpanel.url", cloudPanelUrl);
         config.set("start", start);
         config.set("lobbyLocation", lobbyLocation);
         config.set("lobbyTime", lobbyTime);
