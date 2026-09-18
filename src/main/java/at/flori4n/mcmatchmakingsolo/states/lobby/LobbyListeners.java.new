@@ -18,8 +18,6 @@ import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.github.paperspigot.Title;
 
-import java.util.logging.Level;
-
 public class LobbyListeners implements Listener {
 	private GameData gameData = GameData.getInstance();
 	private LobbyState lobbyState;
@@ -56,26 +54,7 @@ public class LobbyListeners implements Listener {
 			lobbyState.startCounter();
 		}
 		Bukkit.broadcastMessage(gameData.getPlayers().size() + "/" + gameData.getMaxPlayers() + " Spieler");
-		refreshPlayerName(p);
 
-	}
-
-	/** Refreshes the player's name in CloudPanel on every lobby join. Runs async. */
-	private void refreshPlayerName(final Player p) {
-		final String baseUrl = McMatchmakingSolo.getPlugin().getConfig()
-				.getString("cloudpanel.url", "http://localhost:8080");
-		Bukkit.getScheduler().runTaskAsynchronously(McMatchmakingSolo.getPlugin(), new Runnable() {
-			@Override
-			public void run() {
-				try {
-					new BlockingCloudPanelClient(baseUrl)
-							.joinPlayer(new PlayerJoinRequest(p.getUniqueId(), null, p.getName()));
-				} catch (Exception e) {
-					McMatchmakingSolo.getPlugin().getLogger().log(Level.WARNING,
-							"Could not refresh player name in CloudPanel (" + baseUrl + "): " + e.getMessage());
-				}
-			}
-		});
 	}
 
 	@EventHandler

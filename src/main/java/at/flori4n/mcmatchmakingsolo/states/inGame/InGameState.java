@@ -35,8 +35,7 @@ public class InGameState implements State {
             player.setGameMode(GameMode.SURVIVAL);
         });
 
-        String matchName = McMatchmakingSolo.getPlugin().getConfig()
-                .getString("cloudpanel.match-name", "mc-match");
+        String matchName = Bukkit.getServer().getMotd();
         StatsService.getInstance().start(new java.util.ArrayList<>(gameData.getPlayers()), matchName);
 
         if (GameData.getInstance().isUseBorder()){
